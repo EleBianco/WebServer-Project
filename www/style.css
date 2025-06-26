@@ -101,9 +101,9 @@ main {
 }
 
 .logo img {
-    height: 48px;
+    height: 150px;
     width: auto;
-    max-width: 180px;
+    max-width: 300px;
     display: inline-block;
 }
 
