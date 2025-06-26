@@ -118,10 +118,13 @@ class MinimalWebServer:
             
             # Costruisce il percorso completo del file
             file_path = os.path.join(self.document_root, path.lstrip('/'))
-            
+
             # Normalizza il percorso per sicurezza
             file_path = os.path.normpath(file_path)
-            
+
+            # Rendi assoluto il percorso del file
+            file_path = os.path.abspath(file_path)
+
             # Verifica che il file sia nella directory consentita
             if not file_path.startswith(os.path.abspath(self.document_root)):
                 self.send_404(client_socket, client_addr, request_line)
@@ -194,6 +197,7 @@ Connection: close\r
         # Crea il socket del server
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.settimeout(1.0)
         
         try:
             # Bind e listen
@@ -219,6 +223,8 @@ Connection: close\r
                     client_thread.daemon = True
                     client_thread.start()
                     
+                except socket.timeout:
+                    continue
                 except KeyboardInterrupt:
                     break
                 except Exception as e:
